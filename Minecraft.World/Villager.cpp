@@ -280,6 +280,9 @@ void Villager::setLastHurtByMob(shared_ptr<LivingEntity> mob)
 
 void Villager::die(DamageSource *source)
 {
+	// Close any active trade session so merchant menus become invalid immediately on death.
+	setTradingPlayer(nullptr);
+
 	shared_ptr<Village> _village = village.lock();
 	if (_village != NULL)
 	{

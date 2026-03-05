@@ -186,12 +186,15 @@ void IUIScene_TradingMenu::updateDisplay()
 		m_activeOffers.clear();
 		int unfilteredIndex = 0;
 		int firstValidTrade = INT_MAX;
-		for(auto& recipe : *unfilteredOffers)
+		for(auto it = unfilteredOffers->begin(); it != unfilteredOffers->end(); ++it)
 		{
+			MerchantRecipe *recipe = *it;
+			// Keep deprecated offers visible so exhausted trades do not disappear from the UI.
+			m_activeOffers.push_back( pair<MerchantRecipe *,int>(recipe,unfilteredIndex));
 			if(!recipe->isDeprecated())
 			{
-				m_activeOffers.emplace_back(recipe,unfilteredIndex);
-				firstValidTrade = std::min<int>(firstValidTrade, unfilteredIndex);
+				// Track the first non-deprecated offer for initial selection sync.
+				firstValidTrade = min(firstValidTrade,unfilteredIndex);
 			}
 			++unfilteredIndex;
 		}
